@@ -43,13 +43,13 @@ public class FireBaseDatabaseModel implements DataBaseWriter, DataBaseReader {
 
     @Override
     public Completable shareItem(DatabaseReference reference, String UserId, String ItemId) {
-        Log.i("shareit",reference.child("users").child(UserId).child("userItems")+"->"+ItemId);
+        Log.i("itsh",reference.child("users").child(UserId).child("userItems")+"->"+ItemId);
         return RxFirebaseDatabase.setValue(reference.child("users").child(UserId).child("userItems").push(), ItemId);
     }
 
     @Override
     public Completable addItemToUser(DatabaseReference reference, String UserId, String itemKey) {
-        Log.i("addit",reference.child("users").child(UserId).child("userItems")+"->"+itemKey);
+        Log.i("itad",reference.child("users").child(UserId).child("userItems")+"->"+itemKey);
         return RxFirebaseDatabase.setValue(reference.child("users").child(UserId).child("userItems").push(), itemKey);
     }
 

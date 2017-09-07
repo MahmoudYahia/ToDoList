@@ -16,7 +16,6 @@ public interface DataBaseWriter {
     Single<String> addItem(DatabaseReference reference, Item item);
     Completable addUser(DatabaseReference reference, User user);
     Completable shareItem(DatabaseReference reference, String UserId,String ItemId);
-
     Completable addItemToUser(DatabaseReference reference,String Uid,String itemKey);
 
 
