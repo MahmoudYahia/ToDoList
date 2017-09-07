@@ -59,8 +59,12 @@ public class FireBaseDatabaseModel implements DataBaseWriter, DataBaseReader {
     }
 
     @Override
-    public void readUsers(DatabaseReference reference, DataFetcher dataFetcher) {
+    public void readUsers(DatabaseReference reference, DataFetcher dataFetcher,String CureeUserId) {
+
         RxFirebaseDatabase.observeSingleValueEvent(reference.child("users"), DataSnapshotMapper.listOf(User.class))
+                .flatMapObservable( Observable::fromIterable )
+                .filter(user -> !user.getUid().equals(CureeUserId))
+                .toList()
                 .subscribe(data -> dataFetcher.OnDataFetched(data));
     }
 

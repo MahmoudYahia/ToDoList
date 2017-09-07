@@ -33,6 +33,7 @@ public class UsersListActivity extends AppCompatActivity implements OnUserSelect
         usersRecycler.setAdapter(userAdapter);
         DataBaseReader reader= new FireBaseDatabaseModel();
 
+
         reader.readUsers(FirebaseDataRefrences.getInstance().getReference(), new DataFetcher() {
             @Override
             public void OnDataFetched(List data) {
@@ -44,7 +45,7 @@ public class UsersListActivity extends AppCompatActivity implements OnUserSelect
             public void OnKeysFetched(List keys) {
 
             }
-        });
+        },FirebaseDataRefrences.getInstance().getFirebaseUser().getUid());
 
     }
 

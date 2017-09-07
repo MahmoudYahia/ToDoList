@@ -16,7 +16,7 @@ import io.reactivex.Maybe;
 public interface DataBaseReader {
 
     Maybe<DataSnapshot> readUserItemsId(DatabaseReference reference, String userId, Class clazz);
-    void readUsers(DatabaseReference reference,DataFetcher dataFetcher);
+    void readUsers(DatabaseReference reference,DataFetcher dataFetcher,String CurrentUserID);
     List<Item> readItems(String userId,DataFetcher dataFetcher);
 
 }
