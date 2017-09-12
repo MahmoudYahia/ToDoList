@@ -12,7 +12,6 @@ import com.google.firebase.database.FirebaseDatabase;
 public class FirebaseDataRefrences {
 
     private static FirebaseDataRefrences firebaseDataRefrencesInstance; // instance of singleton
-
     private static DatabaseReference databaseReference;
     private static FirebaseUser firebaseUser;
 
@@ -20,7 +19,6 @@ public class FirebaseDataRefrences {
     }
 
     public static FirebaseDataRefrences getInstance(){
-
 
         if (firebaseDataRefrencesInstance ==null){
             firebaseDataRefrencesInstance= new FirebaseDataRefrences();

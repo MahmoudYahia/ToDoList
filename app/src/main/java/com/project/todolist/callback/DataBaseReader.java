@@ -2,12 +2,13 @@ package com.project.todolist.callback;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
-import com.project.todolist.datamodel.Item;
+import com.project.todolist.datamodel.ItemKeyVal;
 import com.project.todolist.datamodel.User;
 
 import java.util.List;
 
 import io.reactivex.Maybe;
+import io.reactivex.Single;
 
 /**
  * Created by mah_y on 8/29/2017.
@@ -15,8 +16,8 @@ import io.reactivex.Maybe;
 
 public interface DataBaseReader {
 
-    Maybe<DataSnapshot> readUserItemsId(DatabaseReference reference, String userId, Class clazz);
-    void readUsers(DatabaseReference reference,DataFetcher dataFetcher,String CurrentUserID);
-    List<Item> readItems(String userId,DataFetcher dataFetcher);
+    Maybe<DataSnapshot> readUserItemsId();
+    Single<List<User>> readUsers();
+    Single<List<ItemKeyVal>> readItems();
 
 }

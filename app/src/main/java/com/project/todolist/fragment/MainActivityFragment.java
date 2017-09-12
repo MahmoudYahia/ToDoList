@@ -10,26 +10,22 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.firebase.database.DataSnapshot;
 import com.project.todolist.activity.UsersListActivity;
 import com.project.todolist.adapter.ItemsAdapter;
 import com.project.todolist.callback.DataBaseWriter;
-import com.project.todolist.callback.DataFetcher;
 import com.project.todolist.callback.OnUserSelectedListener;
-import com.project.todolist.datamodel.Item;
 import com.project.todolist.firebase.FireBaseDatabaseModel;
-import com.project.todolist.firebase.FirebaseDataRefrences;
 import com.project.todolist.R;
 import com.project.todolist.callback.DataBaseReader;
 import com.project.todolist.callback.ItemShareListener;
-
-import java.util.ArrayList;
-import java.util.List;
+import com.project.todolist.firebase.FirebaseDataRefrences;
 
 import io.reactivex.Observable;
+import io.reactivex.ObservableEmitter;
+import io.reactivex.ObservableOnSubscribe;
+import io.reactivex.annotations.NonNull;
 
 
 /**
@@ -56,17 +52,18 @@ public class MainActivityFragment extends Fragment implements ItemShareListener 
         ItemsAdapter itemsAdapter = new ItemsAdapter(getActivity(), this);
         itemsRecycler.setAdapter(itemsAdapter);
 
-        reader.readItems(FirebaseDataRefrences.getInstance().getFirebaseUser().getUid(), new DataFetcher() {
-            @Override
-            public void OnDataFetched(List data) {
-                itemsAdapter.SetList(data);
-                itemsAdapter.notifyDataSetChanged();
-            }
-
-            @Override
-            public void OnKeysFetched(List keys) {
-                itemsAdapter.setKeysList(keys);
-            }
+       /* reader.readItems()
+                .subscribe(itemKeyVals -> {
+                    Log.i("dddd",itemKeyVals.size()+"");
+            itemsAdapter.setAdapterLsit(itemKeyVals);
+            itemsAdapter.notifyDataSetChanged();
+        });
+*/
+        FireBaseDatabaseModel model= new FireBaseDatabaseModel();
+        model.listenChanges().subscribe(itemKeyVals -> {
+            itemsAdapter.setAdapterLsit(itemKeyVals);
+            itemsAdapter.notifyDataSetChanged();
+            itemsRecycler.smoothScrollToPosition(itemKeyVals.size()-1);
         });
 
         return view;
@@ -80,7 +77,7 @@ public class MainActivityFragment extends Fragment implements ItemShareListener 
         DataBaseWriter writer = new FireBaseDatabaseModel();
 
         userSelectedListener = uid -> {
-            writer.shareItem(FirebaseDataRefrences.getInstance().getReference(), uid, item_id)
+            writer.shareItem(uid, item_id)
                     .subscribe();
             Log.i("share", uid + "  " + item_id);
             Toast.makeText(getActivity(), "Shared", Toast.LENGTH_LONG).show();

@@ -52,13 +52,12 @@ public class SignUpActivity extends AppCompatActivity {
             if (UserPass.length() > 5) {
                 if (UserPass.equals(UserConfirmPass)) {
                     // matched pass
-
                     Authenticator authenticator= new FireBaseAuthModel();
                     authenticator.signUp(UserEmail,UserPass).subscribe(authResult -> {
-                        RxFirebaseUser.sendEmailVerification(authResult.getUser());
+                        RxFirebaseUser.sendEmailVerification(authResult.getUser()).subscribe();
                         DataBaseWriter writer= new FireBaseDatabaseModel();
                         User user= new User(authResult.getUser().getUid(),authResult.getUser().getEmail());
-                        writer.addUser(FirebaseDataRefrences.getInstance().getReference(),user).subscribe();
+                        writer.addUser(user).subscribe();
                     },throwable -> {
                         Toast.makeText(SignUpActivity.this,"Error",Toast.LENGTH_LONG).show();
                     });

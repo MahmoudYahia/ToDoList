@@ -10,12 +10,8 @@ import android.support.v7.widget.RecyclerView;
 import com.project.todolist.R;
 import com.project.todolist.adapter.UserAdapter;
 import com.project.todolist.callback.DataBaseReader;
-import com.project.todolist.callback.DataFetcher;
 import com.project.todolist.callback.OnUserSelectedListener;
 import com.project.todolist.firebase.FireBaseDatabaseModel;
-import com.project.todolist.firebase.FirebaseDataRefrences;
-
-import java.util.List;
 
 
 public class UsersListActivity extends AppCompatActivity implements OnUserSelectedListener {
@@ -33,19 +29,10 @@ public class UsersListActivity extends AppCompatActivity implements OnUserSelect
         usersRecycler.setAdapter(userAdapter);
         DataBaseReader reader= new FireBaseDatabaseModel();
 
-
-        reader.readUsers(FirebaseDataRefrences.getInstance().getReference(), new DataFetcher() {
-            @Override
-            public void OnDataFetched(List data) {
-                userAdapter.setList(data);
-                userAdapter.notifyDataSetChanged();
-            }
-
-            @Override
-            public void OnKeysFetched(List keys) {
-
-            }
-        },FirebaseDataRefrences.getInstance().getFirebaseUser().getUid());
+        reader.readUsers().subscribe((users, throwable) -> {
+            userAdapter.setList(users);
+            userAdapter.notifyDataSetChanged();
+        });
 
     }
 

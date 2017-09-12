@@ -13,10 +13,9 @@ import io.reactivex.Single;
  */
 
 public interface DataBaseWriter {
-    Single<String> addItem(DatabaseReference reference, Item item);
-    Completable addUser(DatabaseReference reference, User user);
-    Completable shareItem(DatabaseReference reference, String UserId,String ItemId);
-    Completable addItemToUser(DatabaseReference reference,String Uid,String itemKey);
-
+    Single<String> addItem( Item item);
+    Completable addUser(User user);
+    Completable shareItem( String UserId,String ItemId);
+    Completable addItemToUser(String itemKey);
 
 }

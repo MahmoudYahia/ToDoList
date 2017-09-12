@@ -11,6 +11,7 @@ import android.widget.TextView;
 import com.project.todolist.callback.ItemShareListener;
 import com.project.todolist.R;
 import com.project.todolist.datamodel.Item;
+import com.project.todolist.datamodel.ItemKeyVal;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,14 +23,9 @@ import java.util.List;
 
 public class ItemsAdapter extends RecyclerView.Adapter<ItemsAdapter.ItemViewHolder> {
     private final Context mContext;
-    List<Item>itemList;
-
-
-    List<String>KeysList;
 
     ItemShareListener shareListener;
-    private List<String> keysList;
-
+    List<ItemKeyVal>itemList;
     public ItemsAdapter(Context context, ItemShareListener itemShareListener) {
         this.mContext=context;
         this.itemList=new ArrayList<>();
@@ -46,15 +42,15 @@ public class ItemsAdapter extends RecyclerView.Adapter<ItemsAdapter.ItemViewHold
     @Override
     public void onBindViewHolder(ItemViewHolder holder, int position) {
 
-        holder.title.setText(itemList.get(position).getItemTitle());
-        holder.desc.setText(itemList.get(position).getItemDesc());
+        holder.title.setText(itemList.get(position).getItem().getItemTitle());
+        holder.desc.setText(itemList.get(position).getItem().getItemDesc());
+
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                shareListener.onItemSelecteds(keysList.get(position));
+               shareListener.onItemSelecteds(itemList.get(position).getItemKey());
             }
         });
-       // holder.itemView.setOnClickListener(v -> shareListener.onItemSelecteds(itemList.get(position).getItemId()));
 
     }
     @Override
@@ -62,15 +58,10 @@ public class ItemsAdapter extends RecyclerView.Adapter<ItemsAdapter.ItemViewHold
         return itemList.size();
     }
 
-    public void SetList(List items){
-        this.itemList=items;
+    public void setAdapterLsit(List<ItemKeyVal> lsit){
+        this.itemList=lsit;
+
     }
-
-    public void setKeysList(List keysList) {
-        this.keysList = keysList;
-    }
-
-
     class ItemViewHolder extends RecyclerView.ViewHolder {
         TextView title;
         TextView desc;

@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -14,9 +15,11 @@ import com.project.todolist.R;
 import com.project.todolist.datamodel.User;
 
 import durdinapps.rxfirebase2.RxFirebaseAuth;
+import durdinapps.rxfirebase2.RxFirebaseUser;
 
 public class MainActivity extends AppCompatActivity {
     final int REQUEST_CODE = 1;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -26,7 +29,7 @@ public class MainActivity extends AppCompatActivity {
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(v -> {
-            Intent intent = new Intent(MainActivity.this,AddItemActivity.class);
+            Intent intent = new Intent(MainActivity.this, AddItemActivity.class);
             startActivity(intent);
         });
     }
@@ -35,8 +38,8 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode==RESULT_OK && requestCode==REQUEST_CODE){
-            User user= (User) data.getExtras().getSerializable("user");
+        if (resultCode == RESULT_OK && requestCode == REQUEST_CODE) {
+            User user = (User) data.getExtras().getSerializable("user");
         }
 
 
@@ -59,8 +62,8 @@ public class MainActivity extends AppCompatActivity {
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
             FirebaseAuth.getInstance().signOut();
-            startActivity(new Intent(MainActivity.this,SignInActivity.class));
             finish();
+            //startActivity(new Intent(MainActivity.this, SignInActivity.class));
             return true;
         }
 
