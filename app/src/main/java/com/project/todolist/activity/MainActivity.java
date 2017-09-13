@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.project.todolist.R;
@@ -35,15 +36,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == RESULT_OK && requestCode == REQUEST_CODE) {
-            User user = (User) data.getExtras().getSerializable("user");
-        }
-
-
-    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -62,8 +54,10 @@ public class MainActivity extends AppCompatActivity {
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
             FirebaseAuth.getInstance().signOut();
+
+            Toast.makeText(getBaseContext(),"loggedout",Toast.LENGTH_LONG).show();
             finish();
-            //startActivity(new Intent(MainActivity.this, SignInActivity.class));
+            startActivity(new Intent(MainActivity.this, SignInActivity.class));
             return true;
         }
 

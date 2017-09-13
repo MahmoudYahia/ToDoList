@@ -1,5 +1,6 @@
 package com.project.todolist.activity;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -8,33 +9,33 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.project.todolist.R;
-import com.project.todolist.callback.Authenticator;
-import com.project.todolist.callback.DataBaseWriter;
-import com.project.todolist.datamodel.User;
 import com.project.todolist.firebase.FireBaseAuthModel;
-import com.project.todolist.firebase.FireBaseDatabaseModel;
-import com.project.todolist.firebase.FirebaseDataRefrences;
+import com.project.todolist.view.AuthView;
+import com.project.todolist.presenter.AuthPresenter;
 
-import durdinapps.rxfirebase2.RxFirebaseUser;
+import butterknife.Bind;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
 
-public class SignUpActivity extends AppCompatActivity {
-    EditText RegUserEmail, RegUserPassword, RegUserConfirmPass;
+public class SignUpActivity extends AppCompatActivity implements AuthView{
+    @Bind(R.id.reg_email)
+    EditText RegUserEmail;
+    @Bind(R.id.reg_password)
+    EditText  RegUserPassword;
+    @Bind(R.id.reg_confirm_pass)
+    EditText RegUserConfirmPass;
+
+    @Bind(R.id.btnRegister)
     Button RegisterButton;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_up);
-        RegUserEmail = (EditText) findViewById(R.id.reg_email);
-        RegUserPassword = (EditText) findViewById(R.id.reg_password);
-        RegUserConfirmPass = (EditText) findViewById(R.id.reg_confirm_pass);
-        RegisterButton = (Button) findViewById(R.id.btnRegister);
-
-        RegisterButton.setOnClickListener(v -> {
-            addAccount();
-        });
+        ButterKnife.bind(this);
     }
 
-
+@OnClick(R.id.btnRegister)
     public void addAccount() {
         String UserEmail, UserPass, UserConfirmPass;
 
@@ -46,21 +47,13 @@ public class SignUpActivity extends AppCompatActivity {
                 || TextUtils.isEmpty(UserPass) || TextUtils.isEmpty(UserConfirmPass)) {
 
             Toast.makeText(this, "Empty Fields", Toast.LENGTH_LONG).show();
-            // make Snackbar >> Empty Fields
         } else {
 
             if (UserPass.length() > 5) {
                 if (UserPass.equals(UserConfirmPass)) {
                     // matched pass
-                    Authenticator authenticator= new FireBaseAuthModel();
-                    authenticator.signUp(UserEmail,UserPass).subscribe(authResult -> {
-                        RxFirebaseUser.sendEmailVerification(authResult.getUser()).subscribe();
-                        DataBaseWriter writer= new FireBaseDatabaseModel();
-                        User user= new User(authResult.getUser().getUid(),authResult.getUser().getEmail());
-                        writer.addUser(user).subscribe();
-                    },throwable -> {
-                        Toast.makeText(SignUpActivity.this,"Error",Toast.LENGTH_LONG).show();
-                    });
+                    AuthPresenter authPresenter = new FireBaseAuthModel(this);
+                    authPresenter.signUp(UserEmail,UserPass);
                 } else {
                     RegUserConfirmPass.setText("");
                 }
@@ -69,5 +62,16 @@ public class SignUpActivity extends AppCompatActivity {
             }
 
         }
+    }
+
+    @Override
+    public void navigateActivity() {
+        startActivity( new Intent(SignUpActivity.this,SignInActivity.class));
+        finish();
+    }
+
+    @Override
+    public void authFailed() {
+
     }
 }

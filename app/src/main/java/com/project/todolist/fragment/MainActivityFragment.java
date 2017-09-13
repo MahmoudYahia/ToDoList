@@ -14,28 +14,28 @@ import android.widget.Toast;
 
 import com.project.todolist.activity.UsersListActivity;
 import com.project.todolist.adapter.ItemsAdapter;
-import com.project.todolist.callback.DataBaseWriter;
+import com.project.todolist.view.CompletableView;
+import com.project.todolist.view.DataOfView;
+import com.project.todolist.presenter.DataWriterPresenter;
 import com.project.todolist.callback.OnUserSelectedListener;
-import com.project.todolist.firebase.FireBaseDatabaseModel;
+import com.project.todolist.firebase.FirebaseDatabaseReader;
+import com.project.todolist.firebase.FirebaseDatabaseWriter;
 import com.project.todolist.R;
-import com.project.todolist.callback.DataBaseReader;
+import com.project.todolist.presenter.DataReaderPresenter;
 import com.project.todolist.callback.ItemShareListener;
-import com.project.todolist.firebase.FirebaseDataRefrences;
 
-import io.reactivex.Observable;
-import io.reactivex.ObservableEmitter;
-import io.reactivex.ObservableOnSubscribe;
-import io.reactivex.annotations.NonNull;
+import java.util.List;
 
 
 /**
  * A placeholder fragment containing a simple view.
  */
-public class MainActivityFragment extends Fragment implements ItemShareListener {
+public class MainActivityFragment extends Fragment implements ItemShareListener,DataOfView {
 
     int R_Code = 100;
     OnUserSelectedListener userSelectedListener;
-
+    RecyclerView itemsRecycler;
+    ItemsAdapter itemsAdapter;
     public MainActivityFragment() {
     }
 
@@ -44,27 +44,15 @@ public class MainActivityFragment extends Fragment implements ItemShareListener 
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_main, container, false);
 
-        RecyclerView itemsRecycler = (RecyclerView) view.findViewById(R.id.item_recucler);
+        itemsRecycler = (RecyclerView) view.findViewById(R.id.item_recucler);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
         itemsRecycler.setLayoutManager(layoutManager);
         itemsRecycler.setHasFixedSize(true);
-        DataBaseReader reader = new FireBaseDatabaseModel();
-        ItemsAdapter itemsAdapter = new ItemsAdapter(getActivity(), this);
+        DataReaderPresenter reader = new FirebaseDatabaseReader(this);
+        itemsAdapter = new ItemsAdapter(getActivity(), this);
         itemsRecycler.setAdapter(itemsAdapter);
 
-       /* reader.readItems()
-                .subscribe(itemKeyVals -> {
-                    Log.i("dddd",itemKeyVals.size()+"");
-            itemsAdapter.setAdapterLsit(itemKeyVals);
-            itemsAdapter.notifyDataSetChanged();
-        });
-*/
-        FireBaseDatabaseModel model= new FireBaseDatabaseModel();
-        model.listenChanges().subscribe(itemKeyVals -> {
-            itemsAdapter.setAdapterLsit(itemKeyVals);
-            itemsAdapter.notifyDataSetChanged();
-            itemsRecycler.smoothScrollToPosition(itemKeyVals.size()-1);
-        });
+        reader.readItems();
 
         return view;
     }
@@ -74,14 +62,19 @@ public class MainActivityFragment extends Fragment implements ItemShareListener 
 
         Intent i = new Intent(getActivity(), UsersListActivity.class);
         startActivityForResult(i, R_Code);
-        DataBaseWriter writer = new FireBaseDatabaseModel();
+        DataWriterPresenter writer = new FirebaseDatabaseWriter(new CompletableView() {
+            @Override
+            public void onWorkFinish() {
+                Toast.makeText(getActivity(), "Shared", Toast.LENGTH_LONG).show();
+            }
 
+            @Override
+            public void OnWorkError() {
+
+            }
+        });
         userSelectedListener = uid -> {
-            writer.shareItem(uid, item_id)
-                    .subscribe();
-            Log.i("share", uid + "  " + item_id);
-            Toast.makeText(getActivity(), "Shared", Toast.LENGTH_LONG).show();
-        };
+            writer.shareItem(uid, item_id); };
 
     }
 
@@ -101,4 +94,30 @@ public class MainActivityFragment extends Fragment implements ItemShareListener 
             }
         }
     }
+
+    @Override
+    public void dataFitched(List data) {
+        itemsAdapter.setAdapterLsit(data);
+        itemsAdapter.notifyDataSetChanged();
+        if (data.size()>1){
+            itemsRecycler.smoothScrollToPosition(data.size()-1);
+        }
+    }
 }
+/* reader.readItems()
+                .subscribe(itemKeyVals -> {
+                    Log.i("dddd",itemKeyVals.size()+"");
+            itemsAdapter.setAdapterLsit(itemKeyVals);
+            itemsAdapter.notifyDataSetChanged();
+        });
+*/
+/*
+        model.listenChanges().subscribe(itemKeyVals -> {
+            itemsAdapter.setAdapterLsit(itemKeyVals);
+            itemsAdapter.notifyDataSetChanged();
+            itemsRecycler.smoothScrollToPosition(itemKeyVals.size()-1);
+        },throwable -> {
+            itemsAdapter.setAdapterLsit(new ArrayList<>());
+            itemsAdapter.notifyDataSetChanged();
+        });
+*/

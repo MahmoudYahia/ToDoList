@@ -1,4 +1,4 @@
-package com.project.todolist.callback;
+package com.project.todolist.presenter;
 
 import com.google.firebase.database.DatabaseReference;
 import com.project.todolist.datamodel.Item;
@@ -12,10 +12,9 @@ import io.reactivex.Single;
  * Created by mah_y on 8/29/2017.
  */
 
-public interface DataBaseWriter {
-    Single<String> addItem( Item item);
-    Completable addUser(User user);
-    Completable shareItem( String UserId,String ItemId);
-    Completable addItemToUser(String itemKey);
+public interface DataWriterPresenter {
+    void addItem( Item item);
+    void addUser(User user);
+    void shareItem( String UserId,String ItemId);
 
 }

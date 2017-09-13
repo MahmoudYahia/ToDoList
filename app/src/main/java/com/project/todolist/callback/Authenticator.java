@@ -6,13 +6,12 @@ import com.google.firebase.auth.FirebaseAuth;
 
 import io.reactivex.Completable;
 import io.reactivex.Maybe;
+import io.reactivex.Single;
 
 /**
  * Created by mah_y on 8/29/2017.
  */
 
 public interface Authenticator {
-    Maybe<AuthResult> signIn(String email, String pass);
-    Maybe<AuthResult> signUp(String email, String pass);
     Completable SignOut();
 }

@@ -1,7 +1,6 @@
-package com.project.todolist.callback;
+package com.project.todolist.presenter;
 
 import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseReference;
 import com.project.todolist.datamodel.ItemKeyVal;
 import com.project.todolist.datamodel.User;
 
@@ -14,10 +13,12 @@ import io.reactivex.Single;
  * Created by mah_y on 8/29/2017.
  */
 
-public interface DataBaseReader {
+public interface DataReaderPresenter {
 
-    Maybe<DataSnapshot> readUserItemsId();
-    Single<List<User>> readUsers();
-    Single<List<ItemKeyVal>> readItems();
+    void readUserItemsId();
+
+    void readUsers();
+
+    void readItems();
 
 }
