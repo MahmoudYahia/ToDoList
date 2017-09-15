@@ -1,9 +1,7 @@
-package com.project.todolist.firebase;
-
+package com.project.todolist.firebase.dataWriter;
 import android.util.Log;
 import com.google.firebase.database.DatabaseReference;
-import com.project.todolist.view.CompletableView;
-import com.project.todolist.presenter.DataWriterPresenter;
+import com.project.todolist.firebase.refrences.FirebaseDataRefrences;
 import com.project.todolist.datamodel.Item;
 import com.project.todolist.datamodel.User;
 import durdinapps.rxfirebase2.RxFirebaseDatabase;
@@ -15,32 +13,14 @@ import io.reactivex.Single;
  * Created by mah_y on 8/29/2017.
  */
 
-public class FirebaseDatabaseWriter implements DataWriterPresenter {
+public class FirebaseDatabaseWriter implements DataWriterContract {
 
-    CompletableView completableView;
+    DataWriterContract.WriteComleteListener listener;
 
-    public FirebaseDatabaseWriter(CompletableView completableView) {
-        this.completableView = completableView;
+    public FirebaseDatabaseWriter(DataWriterContract.WriteComleteListener listener) {
+        this.listener=listener;
     }
 
-    @Override
-    public void addItem(Item item) {
-        addItemToDataBase(item)
-                .flatMapCompletable(itemKey -> addItemToUserToDataBase(itemKey))
-                .subscribe(() -> completableView.onWorkFinish());
-    }
-
-    @Override
-    public void addUser(User user) {
-        addUsertoDatabase(user)
-                .subscribe(() -> completableView.onWorkFinish(),throwable -> completableView.OnWorkError());
-    }
-
-    @Override
-    public void shareItem(String UserId, String ItemId) {
-       shareItemToUser(UserId, ItemId)
-               .subscribe(() -> completableView.onWorkFinish(),throwable -> completableView.OnWorkError());
-    }
 
     public Single<String> addItemToDataBase(Item item) {
         DatabaseReference itemsRef = FirebaseDataRefrences.getInstance().getReference().child("items");
@@ -65,4 +45,36 @@ public class FirebaseDatabaseWriter implements DataWriterPresenter {
         return RxFirebaseDatabase.setValue(FirebaseDataRefrences.getInstance().getReference()
                 .child("users").child(user.getUid()), user);
     }
+
+    @Override
+    public void writeItem(String title ,String desc) {
+
+        Item newItem = new Item(FirebaseDataRefrences.getInstance().getFirebaseUser().getUid(), title, desc);
+        addItemToDataBase(newItem)
+                .flatMapCompletable(itemKey -> addItemToUserToDataBase(itemKey))
+                .subscribe(() -> listener.onWriteComplete()
+                        ,throwable ->listener.onWriteError() );
+    }
+
+    @Override
+    public void writeUser(User user) {
+        addUsertoDatabase(user)
+                .subscribe(() ->listener.onWriteComplete(),throwable -> {
+                    listener.onWriteError();
+                });
+    }
+
+//    @Override
+//    public void writeItemToUser(String UserId, String ItemId) {
+//        shareItemToUser(UserId, ItemId)
+//                .subscribe(() -> listener.onWriteComplete() ,throwable -> listener.onWriteError());
+//    }
+
+    @Override
+    public void shareItemTouser(String UserId, String ItemId) {
+        shareItemToUser(UserId, ItemId)
+                .subscribe(() -> listener.onWriteComplete(),throwable -> listener.onWriteError());
+    }
+
+
 }

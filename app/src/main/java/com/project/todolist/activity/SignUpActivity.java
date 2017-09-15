@@ -9,22 +9,20 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.project.todolist.R;
-import com.project.todolist.firebase.FireBaseAuthModel;
-import com.project.todolist.view.AuthView;
-import com.project.todolist.presenter.AuthPresenter;
+import com.project.todolist.signup.SignUpContract;
+import com.project.todolist.signup.SignUpPresenter;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class SignUpActivity extends AppCompatActivity implements AuthView{
+public class SignUpActivity extends AppCompatActivity implements SignUpContract.SignupView {
     @Bind(R.id.reg_email)
     EditText RegUserEmail;
     @Bind(R.id.reg_password)
-    EditText  RegUserPassword;
+    EditText RegUserPassword;
     @Bind(R.id.reg_confirm_pass)
     EditText RegUserConfirmPass;
-
     @Bind(R.id.btnRegister)
     Button RegisterButton;
 
@@ -35,7 +33,7 @@ public class SignUpActivity extends AppCompatActivity implements AuthView{
         ButterKnife.bind(this);
     }
 
-@OnClick(R.id.btnRegister)
+    @OnClick(R.id.btnRegister)
     public void addAccount() {
         String UserEmail, UserPass, UserConfirmPass;
 
@@ -52,26 +50,26 @@ public class SignUpActivity extends AppCompatActivity implements AuthView{
             if (UserPass.length() > 5) {
                 if (UserPass.equals(UserConfirmPass)) {
                     // matched pass
-                    AuthPresenter authPresenter = new FireBaseAuthModel(this);
-                    authPresenter.signUp(UserEmail,UserPass);
+                    SignUpContract.Presenter Presenter =new SignUpPresenter(this);
+                    Presenter.onRegisterButtonClicked(UserEmail, UserPass);
                 } else {
                     RegUserConfirmPass.setText("");
                 }
             } else {
                 RegUserPassword.setError("minimum size 6 ");
             }
-
         }
     }
 
+
     @Override
-    public void navigateActivity() {
-        startActivity( new Intent(SignUpActivity.this,SignInActivity.class));
+    public void navigateToActivity() {
+        startActivity(new Intent(SignUpActivity.this, SignInActivity.class));
         finish();
     }
 
     @Override
-    public void authFailed() {
-
+    public void signUpFailed() {
+        Toast.makeText(this,"Failed",Toast.LENGTH_LONG).show();
     }
 }

@@ -9,15 +9,11 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.project.todolist.R;
-import com.project.todolist.view.CompletableView;
-import com.project.todolist.presenter.DataWriterPresenter;
-import com.project.todolist.datamodel.Item;
-import com.project.todolist.firebase.FirebaseDatabaseWriter;
-import com.project.todolist.firebase.FirebaseDataRefrences;
+import com.project.todolist.addItem.AddItemContrat;
+import com.project.todolist.addItem.AddItemPresenter;
 
-import static com.project.todolist.R.id.item_tile_input;
 
-public class AddItemActivity extends AppCompatActivity implements CompletableView {
+public class AddItemActivity extends AppCompatActivity implements AddItemContrat.View {
 
     EditText item_title, item_desc;
     Button submit_btn;
@@ -28,21 +24,20 @@ public class AddItemActivity extends AppCompatActivity implements CompletableVie
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_item);
 
-        item_title = (EditText) findViewById(item_tile_input);
+        item_title = (EditText) findViewById(R.id.item_tile_input);
         item_desc = (EditText) findViewById(R.id.item_desc_input);
         submit_btn = (Button) findViewById(R.id.item_submit_btn);
 
         submit_btn.setOnClickListener(v -> {
 
             String title = item_title.getText().toString();
-            String Desc = item_desc.getText().toString();
-            if (TextUtils.isEmpty(title) || TextUtils.isEmpty(Desc)) {
+            String desc = item_desc.getText().toString();
+            if (TextUtils.isEmpty(title) || TextUtils.isEmpty(desc)) {
                 Toast.makeText(this, "Empty Fields", Toast.LENGTH_LONG).show();
             } else {
-                Item item = new Item(FirebaseDataRefrences.getInstance().getFirebaseUser().getUid(), title, Desc);
 
-                DataWriterPresenter dataWriterPresenter = new FirebaseDatabaseWriter(this);
-                dataWriterPresenter.addItem(item);
+                AddItemContrat.Presenter presenter = new AddItemPresenter(this);
+                presenter.onAddButtonClicked(title,desc);
             }
 
         });
@@ -50,12 +45,14 @@ public class AddItemActivity extends AppCompatActivity implements CompletableVie
     }
 
     @Override
-    public void onWorkFinish() {
+    public void onAddComplete() {
+        this.finish();
+        Toast.makeText(this,"Shared",Toast.LENGTH_LONG).show();
         startActivity(new Intent(this,MainActivity.class));
     }
 
     @Override
-    public void OnWorkError() {
-
+    public void onAddFailed() {
+        Toast.makeText(this,"Failed",Toast.LENGTH_LONG).show();
     }
 }

@@ -10,15 +10,14 @@ import android.widget.Toast;
 
 import com.google.android.gms.common.SignInButton;
 import com.project.todolist.R;
-import com.project.todolist.firebase.FireBaseAuthModel;
-import com.project.todolist.view.AuthView;
-import com.project.todolist.presenter.AuthPresenter;
+import com.project.todolist.login.LoginContract;
+import com.project.todolist.login.LoginPresenter;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class SignInActivity extends AppCompatActivity implements AuthView {
+public class SignInActivity extends AppCompatActivity implements LoginContract.LoginView {
 
     @Bind(R.id.txt_email)
     EditText InputEmial;
@@ -31,20 +30,22 @@ public class SignInActivity extends AppCompatActivity implements AuthView {
     @Bind(R.id.sign_in_google)
     SignInButton mSignInButton;
 
-    AuthPresenter authPresenter;
+    LoginContract.Presenter loginPresenter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_in);
         ButterKnife.bind(this);
-        authPresenter = new FireBaseAuthModel(this);
+       // loginPresenter = new LoginPresenter(this);
+        loginPresenter= new LoginPresenter(this);
+
     }
 
     @Override
     protected void onStart() {
         super.onStart();
-        authPresenter.checkUserSession();
+        loginPresenter.checkUserSession();
     }
 
 
@@ -55,9 +56,8 @@ public class SignInActivity extends AppCompatActivity implements AuthView {
 
         if (TextUtils.isEmpty(email) || TextUtils.isEmpty(pass)) {
             Toast.makeText(SignInActivity.this, "empty field", Toast.LENGTH_LONG).show();
-        }
-        else {
-            authPresenter.signIn(email,pass);
+        } else {
+            loginPresenter.onButtonClicked(email,pass);
         }
     }
 
@@ -67,16 +67,15 @@ public class SignInActivity extends AppCompatActivity implements AuthView {
     }
 
     @Override
-    public void navigateActivity() {
-        Intent intent = new Intent(this,MainActivity.class);
-        Toast.makeText(this,"go Main Activity",Toast.LENGTH_LONG).show();
+    public void navigateToActivity() {
+        Intent intent = new Intent(this, MainActivity.class);
         startActivity(intent);
         SignInActivity.this.finish();
     }
 
     @Override
-    public void authFailed() {
-
+    public void loginFailed() {
+        Toast.makeText(this,"Failed",Toast.LENGTH_LONG).show();
     }
 }
 

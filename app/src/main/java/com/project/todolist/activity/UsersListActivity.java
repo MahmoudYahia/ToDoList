@@ -9,15 +9,14 @@ import android.support.v7.widget.RecyclerView;
 
 import com.project.todolist.R;
 import com.project.todolist.adapter.UserAdapter;
-import com.project.todolist.view.DataOfView;
-import com.project.todolist.presenter.DataReaderPresenter;
+import com.project.todolist.usersList.UserListContrat;
+import com.project.todolist.usersList.UserListPresenter;
 import com.project.todolist.callback.OnUserSelectedListener;
-import com.project.todolist.firebase.FirebaseDatabaseReader;
 
 import java.util.List;
 
 
-public class UsersListActivity extends AppCompatActivity implements OnUserSelectedListener, DataOfView {
+public class UsersListActivity extends AppCompatActivity implements OnUserSelectedListener, UserListContrat.View {
     RecyclerView usersRecycler;
     LinearLayoutManager layoutManager;
     UserAdapter userAdapter;
@@ -34,8 +33,9 @@ public class UsersListActivity extends AppCompatActivity implements OnUserSelect
         userAdapter = new UserAdapter(this, this);
         usersRecycler.setAdapter(userAdapter);
 
-        DataReaderPresenter reader = new FirebaseDatabaseReader(this);
-        reader.readUsers();
+
+        UserListContrat.Presenter presenter= new UserListPresenter(this);
+        presenter.onActivtyReady();
 
     }
 
@@ -45,13 +45,19 @@ public class UsersListActivity extends AppCompatActivity implements OnUserSelect
         returnIntent.putExtra("user_id", uid);
         setResult(Activity.RESULT_OK, returnIntent);
         finish();
+
     }
 
 
+
     @Override
-    public void dataFitched(List data) {
-        userAdapter.setList(data);
+    public void onDataFetched(List list) {
+        userAdapter.setList(list);
         userAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void onErrorFetchingData() {
 
     }
 }

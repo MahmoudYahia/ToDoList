@@ -5,6 +5,5 @@ package com.project.todolist.callback;
  */
 
 public interface ItemShareListener {
-    //void onItemSelecteds(rx.Observable observable);
     void onItemSelecteds(String id);
 }

@@ -14,14 +14,12 @@ import android.widget.Toast;
 
 import com.project.todolist.activity.UsersListActivity;
 import com.project.todolist.adapter.ItemsAdapter;
-import com.project.todolist.view.CompletableView;
-import com.project.todolist.view.DataOfView;
-import com.project.todolist.presenter.DataWriterPresenter;
+import com.project.todolist.raedItems.ReadItemsContract;
+import com.project.todolist.raedItems.ReadItemsPresneter;
+import com.project.todolist.shareItem.ShareContract;
+import com.project.todolist.shareItem.SharePresenter;
 import com.project.todolist.callback.OnUserSelectedListener;
-import com.project.todolist.firebase.FirebaseDatabaseReader;
-import com.project.todolist.firebase.FirebaseDatabaseWriter;
 import com.project.todolist.R;
-import com.project.todolist.presenter.DataReaderPresenter;
 import com.project.todolist.callback.ItemShareListener;
 
 import java.util.List;
@@ -30,7 +28,7 @@ import java.util.List;
 /**
  * A placeholder fragment containing a simple view.
  */
-public class MainActivityFragment extends Fragment implements ItemShareListener,DataOfView {
+public class MainActivityFragment extends Fragment implements ItemShareListener,ReadItemsContract.View,ShareContract.View {
 
     int R_Code = 100;
     OnUserSelectedListener userSelectedListener;
@@ -48,11 +46,11 @@ public class MainActivityFragment extends Fragment implements ItemShareListener,
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
         itemsRecycler.setLayoutManager(layoutManager);
         itemsRecycler.setHasFixedSize(true);
-        DataReaderPresenter reader = new FirebaseDatabaseReader(this);
         itemsAdapter = new ItemsAdapter(getActivity(), this);
         itemsRecycler.setAdapter(itemsAdapter);
 
-        reader.readItems();
+        ReadItemsContract.Presenter presenter= new ReadItemsPresneter(this);
+        presenter.onActivityReady();
 
         return view;
     }
@@ -62,19 +60,9 @@ public class MainActivityFragment extends Fragment implements ItemShareListener,
 
         Intent i = new Intent(getActivity(), UsersListActivity.class);
         startActivityForResult(i, R_Code);
-        DataWriterPresenter writer = new FirebaseDatabaseWriter(new CompletableView() {
-            @Override
-            public void onWorkFinish() {
-                Toast.makeText(getActivity(), "Shared", Toast.LENGTH_LONG).show();
-            }
+        ShareContract.Presenter presenter =new SharePresenter(this);
 
-            @Override
-            public void OnWorkError() {
-
-            }
-        });
-        userSelectedListener = uid -> {
-            writer.shareItem(uid, item_id); };
+        userSelectedListener = uid -> presenter.userSelected(uid,item_id);
 
     }
 
@@ -95,29 +83,23 @@ public class MainActivityFragment extends Fragment implements ItemShareListener,
         }
     }
 
+
     @Override
-    public void dataFitched(List data) {
+    public void dataFetched(List data) {
         itemsAdapter.setAdapterLsit(data);
         itemsAdapter.notifyDataSetChanged();
         if (data.size()>1){
             itemsRecycler.smoothScrollToPosition(data.size()-1);
         }
     }
+
+    @Override
+    public void errorFetchingFailed() {
+        Toast.makeText(getActivity(),"Failed",Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void onShareComplete() {
+        Toast.makeText(getActivity(),"Shared",Toast.LENGTH_LONG).show();
+    }
 }
-/* reader.readItems()
-                .subscribe(itemKeyVals -> {
-                    Log.i("dddd",itemKeyVals.size()+"");
-            itemsAdapter.setAdapterLsit(itemKeyVals);
-            itemsAdapter.notifyDataSetChanged();
-        });
-*/
-/*
-        model.listenChanges().subscribe(itemKeyVals -> {
-            itemsAdapter.setAdapterLsit(itemKeyVals);
-            itemsAdapter.notifyDataSetChanged();
-            itemsRecycler.smoothScrollToPosition(itemKeyVals.size()-1);
-        },throwable -> {
-            itemsAdapter.setAdapterLsit(new ArrayList<>());
-            itemsAdapter.notifyDataSetChanged();
-        });
-*/
