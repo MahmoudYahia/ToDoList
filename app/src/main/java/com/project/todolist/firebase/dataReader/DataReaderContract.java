@@ -1,6 +1,11 @@
 package com.project.todolist.firebase.dataReader;
 
+import com.project.todolist.datamodel.ItemKeyVal;
+
 import java.util.List;
+
+import io.reactivex.Completable;
+import io.reactivex.Flowable;
 
 /**
  * Created by mah_y on 9/13/2017.
@@ -8,13 +13,10 @@ import java.util.List;
 
 public interface DataReaderContract {
 
-    void readItems();
+    Flowable<List<ItemKeyVal>> readItems();
 
     void readUsersList();
 
-    interface DataFetcherListener {
-        void onDataFetched(List list);
+    Completable signOut();
 
-        void onErrorFetchingData();
-    }
 }

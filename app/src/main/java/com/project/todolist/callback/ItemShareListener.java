@@ -5,5 +5,5 @@ package com.project.todolist.callback;
  */
 
 public interface ItemShareListener {
-    void onItemSelecteds(String id);
+    void onItemSelected(String id);
 }

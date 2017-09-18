@@ -1,19 +1,20 @@
 package com.project.todolist.firebase.authentication;
 
 
+import io.reactivex.Completable;
+import io.reactivex.Single;
+
 /**
  * Created by mah_y on 9/13/2017.
  */
 
 public interface AuthContract {
 
-    void SignIn(String emial,String pass,AuthCompleteListener authCompleteListener);
-    void isUserLoggedIn(AuthCompleteListener authCompleteListener);
-    void SignUp(String emial,String pass,AuthCompleteListener authCompleteListener);
+    //Single<Boolean> SignIn(String emial, String pass, AuthCompleteListener authCompleteListener);
+    Single<Boolean> SignIn(String emial, String pass);
+    Single<Boolean> isUserLoggedIn( );
+    Completable SignUp(String emial, String pass);
 
-     interface AuthCompleteListener{
-        void onAuthSuccess();
-        void onAuthFailed();
-    }
+
 
 }

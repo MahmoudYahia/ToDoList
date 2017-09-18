@@ -44,23 +44,4 @@ public class MainActivity extends AppCompatActivity {
         return true;
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            FirebaseAuth.getInstance().signOut();
-
-            Toast.makeText(getBaseContext(),"loggedout",Toast.LENGTH_LONG).show();
-            finish();
-            startActivity(new Intent(MainActivity.this, SignInActivity.class));
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
 }

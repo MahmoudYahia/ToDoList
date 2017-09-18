@@ -3,7 +3,6 @@ package com.project.todolist.activity;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -37,45 +36,53 @@ public class SignInActivity extends AppCompatActivity implements LoginContract.L
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_in);
         ButterKnife.bind(this);
-       // loginPresenter = new LoginPresenter(this);
-        loginPresenter= new LoginPresenter(this);
-
+        loginPresenter = new LoginPresenter(this);
     }
 
     @Override
     protected void onStart() {
         super.onStart();
-        loginPresenter.checkUserSession();
+
+        loginPresenter.onActivityStarted();
     }
 
-
     @OnClick(R.id.btn_login)
-    public void onLoginPreesed() {
-        String email = InputEmial.getText().toString();
-        String pass = InputPass.getText().toString();
-
-        if (TextUtils.isEmpty(email) || TextUtils.isEmpty(pass)) {
-            Toast.makeText(SignInActivity.this, "empty field", Toast.LENGTH_LONG).show();
-        } else {
-            loginPresenter.onButtonClicked(email,pass);
-        }
+    public void onLoginPressed() {
+        loginPresenter.onLoginButtonClicked(InputEmial.getText().toString(), InputPass.getText().toString());
     }
 
     @OnClick(R.id.btn_sign_up)
-    public void onRegisterPressed() {
-        startActivity(new Intent(SignInActivity.this, SignUpActivity.class));
+    public void onRegisterButtonPressed() {
+        loginPresenter.onRegisterButtonClicked();
     }
 
     @Override
-    public void navigateToActivity() {
-        Intent intent = new Intent(this, MainActivity.class);
-        startActivity(intent);
+    public void navigateToMainActivity() {
+        startActivity(new Intent(this, MainActivity.class));
         SignInActivity.this.finish();
     }
 
     @Override
-    public void loginFailed() {
+    public void showFailedMessage() {
         Toast.makeText(this,"Failed",Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void showEmptyFieldMessage() {
+        Toast.makeText(this,"Empty Field",Toast.LENGTH_LONG).show();
+    }
+
+
+    @Override
+    public void navigateToSignUpActivity() {
+        startActivity(new Intent(SignInActivity.this, SignUpActivity.class));
+    }
+
+
+
+    @Override
+    public void notLoggedUser() {
+
     }
 }
 

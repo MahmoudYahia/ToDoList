@@ -7,15 +7,17 @@ import com.project.todolist.firebase.dataWriter.DataWriterContract;
 import com.project.todolist.firebase.dataWriter.FirebaseDatabaseWriter;
 import com.project.todolist.firebase.refrences.FirebaseDataRefrences;
 import com.project.todolist.datamodel.User;
+
 import durdinapps.rxfirebase2.RxFirebaseAuth;
 import durdinapps.rxfirebase2.RxFirebaseUser;
+import io.reactivex.Completable;
 import io.reactivex.Single;
 
 /**
  * Created by mah_y on 8/29/2017.
  */
 
-public class FireBaseAuthModel implements AuthContract{
+public class FireBaseAuthModel implements AuthContract {
 
     FirebaseAuth mAuth;
 
@@ -23,7 +25,7 @@ public class FireBaseAuthModel implements AuthContract{
         mAuth = FirebaseAuth.getInstance();
     }
 
-    public Single<Boolean> checkUserIsLoogedIn() {
+    Single<Boolean> checkUserIsLoogedIn() {
         if (FirebaseDataRefrences.getInstance().getFirebaseUser() != null) {
             return Single.just(true);
         } else {
@@ -31,7 +33,7 @@ public class FireBaseAuthModel implements AuthContract{
         }
     }
 
-    public Single<Boolean> checkFirebaseAuthResult(AuthResult authResult) {
+    Single<Boolean> checkFirebaseAuthResult(AuthResult authResult) {
         if (authResult.getUser() != null) {
             return Single.just(true);
         } else {
@@ -39,15 +41,17 @@ public class FireBaseAuthModel implements AuthContract{
         }
     }
 
-    public Single<FirebaseUser> addNewAccount(String email, String pass) {
+    Single<FirebaseUser> addNewAccount(String email, String pass) {
         return RxFirebaseAuth.createUserWithEmailAndPassword(mAuth, email, pass)
                 .flatMapSingle(authResult -> Single.just(authResult.getUser()));
     }
 
 
     @Override
-    public void SignIn(String email, String pass, AuthCompleteListener authCompleteListener) {
-        RxFirebaseAuth.signInWithEmailAndPassword(mAuth, email, pass)
+    public Single<Boolean> SignIn(String email, String pass) {
+        return RxFirebaseAuth.signInWithEmailAndPassword(mAuth, email, pass)
+                .flatMapSingle(authResult -> checkFirebaseAuthResult(authResult));
+        /* RxFirebaseAuth.signInWithEmailAndPassword(mAuth, email, pass)
                 .flatMapSingle(authResult -> checkFirebaseAuthResult(authResult))
                 .subscribe(aBoolean -> {
                     if (aBoolean) {
@@ -56,23 +60,31 @@ public class FireBaseAuthModel implements AuthContract{
                         authCompleteListener.onAuthFailed();
                     }
                 });
-
+*/
     }
 
     @Override
-    public void isUserLoggedIn(AuthCompleteListener authCompleteListener) {
-        checkUserIsLoogedIn().subscribe(aBoolean -> {
-            if (aBoolean){
-                authCompleteListener.onAuthSuccess();
-            }
-            else {
-                authCompleteListener.onAuthFailed();
-            }
-        },throwable -> {
-            authCompleteListener.onAuthFailed();
-        });
+    public Single<Boolean> isUserLoggedIn() {
+        return checkUserIsLoogedIn();
     }
 
+    @Override
+    public Completable SignUp(String email, String pass) {
+       return addNewAccount(email, pass)
+                .filter(firebaseUser -> firebaseUser != null)
+                .doOnSuccess(firebaseUser -> RxFirebaseUser.sendEmailVerification(firebaseUser))
+                .flatMapSingle(firebaseUser -> Single.just(new User(firebaseUser.getUid(), firebaseUser.getEmail())))
+                .flatMapCompletable(user -> {
+                    DataWriterContract contract = new FirebaseDatabaseWriter();
+                  return  contract.writeUser(user);
+                });
+
+
+    }
+
+
+
+/*
     @Override
     public void SignUp(String email, String pass, AuthCompleteListener authCompleteListener) {
         addNewAccount(email, pass)
@@ -96,15 +108,8 @@ public class FireBaseAuthModel implements AuthContract{
 
 
                      */
-                })
-                .subscribe( user -> {
-                    authCompleteListener.onAuthSuccess();
-                },throwable -> {
-                    authCompleteListener.onAuthFailed();
-                });
-    }
 
 
-}
+        }
 
 

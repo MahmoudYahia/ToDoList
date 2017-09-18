@@ -1,6 +1,5 @@
 package com.project.todolist.signup;
 
-import com.project.todolist.datamodel.User;
 
 /**
  * Created by mah_y on 9/14/2017.
@@ -8,13 +7,20 @@ import com.project.todolist.datamodel.User;
 
 public interface SignUpContract {
 
-    interface SignupView{
-        void navigateToActivity();
-        void signUpFailed();
+    interface SignupView {
+
+        void navigateToSignInActivity();
+
+        void showSignUpFailedMessage();
+
+        void ResetConfirmPass();
+
+        void showNotValidPassword();
+        void showEmptyFieldsMessage();
     }
 
     interface Presenter {
-        void onRegisterButtonClicked(String email , String pass);
+        void onRegisterButtonClicked(String email, String pass, String confirmPass);
     }
 
 }

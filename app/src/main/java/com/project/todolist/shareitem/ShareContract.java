@@ -1,4 +1,4 @@
-package com.project.todolist.shareItem;
+package com.project.todolist.shareitem;
 
 /**
  * Created by mah_y on 9/14/2017.
@@ -6,7 +6,8 @@ package com.project.todolist.shareItem;
 
 public interface ShareContract {
     interface View{
-        void onShareComplete();
+        void showCompleteSharingMessage();
+        void showFailedMessage();
     }
 
     interface Presenter{

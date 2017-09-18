@@ -7,14 +7,26 @@ package com.project.todolist.login;
 public interface LoginContract {
 
     interface LoginView {
-        void navigateToActivity();
-        void loginFailed();
+
+        void navigateToMainActivity(); /// activity name
+
+        void showFailedMessage(); // show message
+
+        void showEmptyFieldMessage();
+
+        void navigateToSignUpActivity();
+
+
+        void notLoggedUser();
+
     }
 
-    interface Presenter {
-        void checkUserSession();
+    interface Presenter extends BasePresenter {
 
-        void onButtonClicked(String email, String pass);
+        void onLoginButtonClicked(String email, String pass);
+
+        void onRegisterButtonClicked();
+
 
     }
 }

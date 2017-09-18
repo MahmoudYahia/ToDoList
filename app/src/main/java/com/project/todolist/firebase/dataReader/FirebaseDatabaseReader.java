@@ -1,5 +1,6 @@
 package com.project.todolist.firebase.dataReader;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.Query;
 import com.project.todolist.firebase.refrences.FirebaseDataRefrences;
 import com.project.todolist.datamodel.Item;
@@ -10,6 +11,7 @@ import java.util.List;
 
 import durdinapps.rxfirebase2.DataSnapshotMapper;
 import durdinapps.rxfirebase2.RxFirebaseDatabase;
+import io.reactivex.Completable;
 import io.reactivex.Flowable;
 import io.reactivex.Observable;
 import io.reactivex.Single;
@@ -18,30 +20,32 @@ import io.reactivex.Single;
  * Created by mah_y on 9/12/2017.
  */
 
-public class FirebaseDatabaseReader implements DataReaderContract  {
-    DataFetcherListener fetcherListener;
+public class FirebaseDatabaseReader implements DataReaderContract {
 
-    public FirebaseDatabaseReader(DataFetcherListener fetcherListener) {
-        this.fetcherListener = fetcherListener;
+    public FirebaseDatabaseReader() {
     }
 
     @Override
-    public void readItems() {
-        readItemsFromDataBase()
-                .subscribe(itemKeyVals -> {
-                    fetcherListener.onDataFetched(itemKeyVals);
-        },throwable -> {
-                    fetcherListener.onErrorFetchingData();
-             });
+    public Flowable<List<ItemKeyVal>> readItems() {
+        return readItemsFromDataBase();
     }
 
     @Override
     public void readUsersList() {
-        readUsersfromDataBase().subscribe(users -> {
-           fetcherListener.onDataFetched(users);
-        },throwable -> {
-            fetcherListener.onErrorFetchingData();
-        });
+        readUsersfromDataBase();
+//                .subscribe(users -> {
+//                    fetcherListener.onDataFetched(users);
+//                }, throwable -> {
+//                    fetcherListener.onErrorFetchingData();
+//                });
+    }
+
+    @Override
+    public Completable signOut() {
+        FirebaseAuth.getInstance().signOut();
+        FirebaseDataRefrences.getInstance().setFirebaseUserNull();
+        return Completable.complete();
+
     }
 
 //    public Flowable<List<ItemKeyVal>> listenChangesfromDatabase() {
@@ -65,7 +69,7 @@ public class FirebaseDatabaseReader implements DataReaderContract  {
 //                .child("userItems"));
 //    }
 
-    public Single<List<User>> readUsersfromDataBase(){
+    public Single<List<User>> readUsersfromDataBase() {
         return RxFirebaseDatabase.observeSingleValueEvent(FirebaseDataRefrences.getInstance().getReference().child("users"),
                 DataSnapshotMapper.listOf(User.class))
                 .flatMapObservable(Observable::fromIterable)
@@ -73,7 +77,7 @@ public class FirebaseDatabaseReader implements DataReaderContract  {
                 .toList();
     }
 
-    public Flowable<List<ItemKeyVal>> readItemsFromDataBase(){
+    public Flowable<List<ItemKeyVal>> readItemsFromDataBase() {
         Query where = FirebaseDataRefrences.getInstance().getReference().child("users")
                 .child(FirebaseDataRefrences.getInstance().getFirebaseUser().getUid())
                 .child("userItems");

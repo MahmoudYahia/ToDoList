@@ -9,14 +9,14 @@ import android.support.v7.widget.RecyclerView;
 
 import com.project.todolist.R;
 import com.project.todolist.adapter.UserAdapter;
-import com.project.todolist.usersList.UserListContrat;
-import com.project.todolist.usersList.UserListPresenter;
+import com.project.todolist.userslist.UserListContract;
+import com.project.todolist.userslist.UserListPresenter;
 import com.project.todolist.callback.OnUserSelectedListener;
 
 import java.util.List;
 
 
-public class UsersListActivity extends AppCompatActivity implements OnUserSelectedListener, UserListContrat.View {
+public class UsersListActivity extends AppCompatActivity implements OnUserSelectedListener, UserListContract.View {
     RecyclerView usersRecycler;
     LinearLayoutManager layoutManager;
     UserAdapter userAdapter;
@@ -34,8 +34,8 @@ public class UsersListActivity extends AppCompatActivity implements OnUserSelect
         usersRecycler.setAdapter(userAdapter);
 
 
-        UserListContrat.Presenter presenter= new UserListPresenter(this);
-        presenter.onActivtyReady();
+        UserListContract.Presenter presenter= new UserListPresenter(this);
+        presenter.onActivityReady();
 
     }
 
@@ -51,13 +51,13 @@ public class UsersListActivity extends AppCompatActivity implements OnUserSelect
 
 
     @Override
-    public void onDataFetched(List list) {
+    public void onBindData(List list) {
         userAdapter.setList(list);
         userAdapter.notifyDataSetChanged();
     }
 
     @Override
-    public void onErrorFetchingData() {
+    public void showErrorFetchingDataMessages() {
 
     }
 }

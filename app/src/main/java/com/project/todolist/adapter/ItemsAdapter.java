@@ -2,7 +2,6 @@ package com.project.todolist.adapter;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,7 +9,6 @@ import android.widget.TextView;
 
 import com.project.todolist.callback.ItemShareListener;
 import com.project.todolist.R;
-import com.project.todolist.datamodel.Item;
 import com.project.todolist.datamodel.ItemKeyVal;
 
 import java.util.ArrayList;
@@ -48,7 +46,7 @@ public class ItemsAdapter extends RecyclerView.Adapter<ItemsAdapter.ItemViewHold
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-               shareListener.onItemSelecteds(itemList.get(position).getItemKey());
+               shareListener.onItemSelected(itemList.get(position).getItemKey());
             }
         });
 

@@ -15,27 +15,26 @@ public class FirebaseDataRefrences {
     private static DatabaseReference databaseReference;
     private static FirebaseUser firebaseUser;
 
-    private FirebaseDataRefrences(){
+    private FirebaseDataRefrences() {
     }
 
-    public static FirebaseDataRefrences getInstance(){
+    public static FirebaseDataRefrences getInstance() {
 
-        if (firebaseDataRefrencesInstance ==null){
-            firebaseDataRefrencesInstance= new FirebaseDataRefrences();
+        if (firebaseDataRefrencesInstance == null) {
+            firebaseDataRefrencesInstance = new FirebaseDataRefrences();
+            return firebaseDataRefrencesInstance;
+        } else {
             return firebaseDataRefrencesInstance;
         }
-        else {
-            return firebaseDataRefrencesInstance;
-        }
+
     }
 
-    public  DatabaseReference getReference(){
+    public DatabaseReference getReference() {
 
-        if (databaseReference==null){
-            databaseReference=FirebaseDatabase.getInstance().getReference();
-
+        if (databaseReference == null) {
+            databaseReference = FirebaseDatabase.getInstance().getReference();
             return databaseReference;
-        }else {
+        } else {
             return databaseReference;
 
         }
@@ -43,14 +42,17 @@ public class FirebaseDataRefrences {
 
     public FirebaseUser getFirebaseUser() {
 
-        if (firebaseUser==null){
+        if (firebaseUser == null) {
             firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
             return firebaseUser;
-        }
-        else {
-             return firebaseUser;
+        } else {
+            return firebaseUser;
         }
 
+    }
+
+    public void setFirebaseUserNull() {
+        firebaseUser = null;
     }
 
 }

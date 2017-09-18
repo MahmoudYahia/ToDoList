@@ -9,8 +9,8 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.project.todolist.R;
-import com.project.todolist.addItem.AddItemContrat;
-import com.project.todolist.addItem.AddItemPresenter;
+import com.project.todolist.additem.AddItemContrat;
+import com.project.todolist.additem.AddItemPresenter;
 
 
 public class AddItemActivity extends AppCompatActivity implements AddItemContrat.View {
@@ -28,31 +28,29 @@ public class AddItemActivity extends AppCompatActivity implements AddItemContrat
         item_desc = (EditText) findViewById(R.id.item_desc_input);
         submit_btn = (Button) findViewById(R.id.item_submit_btn);
 
+        AddItemContrat.Presenter presenter = new AddItemPresenter(this);
+
         submit_btn.setOnClickListener(v -> {
-
-            String title = item_title.getText().toString();
-            String desc = item_desc.getText().toString();
-            if (TextUtils.isEmpty(title) || TextUtils.isEmpty(desc)) {
-                Toast.makeText(this, "Empty Fields", Toast.LENGTH_LONG).show();
-            } else {
-
-                AddItemContrat.Presenter presenter = new AddItemPresenter(this);
-                presenter.onAddButtonClicked(title,desc);
-            }
-
+            presenter.onAddButtonClicked(item_title.getText().toString(), item_desc.getText().toString());
         });
 
     }
 
     @Override
-    public void onAddComplete() {
+    public void finishCurrentActivity() {
         this.finish();
-        Toast.makeText(this,"Shared",Toast.LENGTH_LONG).show();
-        startActivity(new Intent(this,MainActivity.class));
+        Toast.makeText(this, "Shared", Toast.LENGTH_LONG).show();
+        startActivity(new Intent(this, MainActivity.class));
     }
 
     @Override
-    public void onAddFailed() {
-        Toast.makeText(this,"Failed",Toast.LENGTH_LONG).show();
+    public void showFailedMessage() {
+        Toast.makeText(this, "Failed", Toast.LENGTH_LONG).show();
+    }
+    
+
+    @Override
+    public void showEmptyItemMessage() {
+        Toast.makeText(this, "Empty Field", Toast.LENGTH_LONG).show();
     }
 }

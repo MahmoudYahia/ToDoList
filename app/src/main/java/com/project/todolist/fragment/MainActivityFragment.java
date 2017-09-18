@@ -8,16 +8,19 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.project.todolist.activity.SignInActivity;
 import com.project.todolist.activity.UsersListActivity;
 import com.project.todolist.adapter.ItemsAdapter;
-import com.project.todolist.raedItems.ReadItemsContract;
-import com.project.todolist.raedItems.ReadItemsPresneter;
-import com.project.todolist.shareItem.ShareContract;
-import com.project.todolist.shareItem.SharePresenter;
+import com.project.todolist.datamodel.ItemKeyVal;
+import com.project.todolist.readitems.ReadItemsContract;
+import com.project.todolist.readitems.ReadItemsPresneter;
+import com.project.todolist.shareitem.ShareContract;
+import com.project.todolist.shareitem.SharePresenter;
 import com.project.todolist.callback.OnUserSelectedListener;
 import com.project.todolist.R;
 import com.project.todolist.callback.ItemShareListener;
@@ -34,6 +37,8 @@ public class MainActivityFragment extends Fragment implements ItemShareListener,
     OnUserSelectedListener userSelectedListener;
     RecyclerView itemsRecycler;
     ItemsAdapter itemsAdapter;
+    ReadItemsContract.Presenter presenter;
+
     public MainActivityFragment() {
     }
 
@@ -41,6 +46,7 @@ public class MainActivityFragment extends Fragment implements ItemShareListener,
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_main, container, false);
+        setHasOptionsMenu(true);
 
         itemsRecycler = (RecyclerView) view.findViewById(R.id.item_recucler);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
@@ -49,14 +55,14 @@ public class MainActivityFragment extends Fragment implements ItemShareListener,
         itemsAdapter = new ItemsAdapter(getActivity(), this);
         itemsRecycler.setAdapter(itemsAdapter);
 
-        ReadItemsContract.Presenter presenter= new ReadItemsPresneter(this);
+        presenter= new ReadItemsPresneter(this);
         presenter.onActivityReady();
 
         return view;
     }
 
     @Override
-    public void onItemSelecteds(String item_id) {
+    public void onItemSelected(String item_id) {
 
         Intent i = new Intent(getActivity(), UsersListActivity.class);
         startActivityForResult(i, R_Code);
@@ -85,21 +91,47 @@ public class MainActivityFragment extends Fragment implements ItemShareListener,
 
 
     @Override
-    public void dataFetched(List data) {
+    public void bindData(List<ItemKeyVal> data) {
         itemsAdapter.setAdapterLsit(data);
         itemsAdapter.notifyDataSetChanged();
-        if (data.size()>1){
+
+        if (data.size()>0){
             itemsRecycler.smoothScrollToPosition(data.size()-1);
         }
     }
 
+
+
     @Override
-    public void errorFetchingFailed() {
+    public void showErrorFetchingMessage() {
         Toast.makeText(getActivity(),"Failed",Toast.LENGTH_LONG).show();
     }
 
     @Override
-    public void onShareComplete() {
+    public void navigateToSignInActivity() {
+        startActivity(new Intent(getActivity(),SignInActivity.class));
+        getActivity().finish();
+    }
+
+    @Override
+    public void showCompleteSharingMessage() {
         Toast.makeText(getActivity(),"Shared",Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void showFailedMessage() {
+        Toast.makeText(getActivity(),"Shared Failed",Toast.LENGTH_LONG).show();
+
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        int id = item.getItemId();
+        if (id == R.id.action_settings) {
+            presenter.signOut();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }

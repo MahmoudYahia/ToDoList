@@ -35,41 +35,38 @@ public class SignUpActivity extends AppCompatActivity implements SignUpContract.
 
     @OnClick(R.id.btnRegister)
     public void addAccount() {
-        String UserEmail, UserPass, UserConfirmPass;
+        SignUpContract.Presenter Presenter =new SignUpPresenter(this);
 
-        UserEmail = RegUserEmail.getText().toString();
-        UserPass = RegUserPassword.getText().toString();
-        UserConfirmPass = RegUserConfirmPass.getText().toString();
-
-        if (TextUtils.isEmpty(UserEmail)
-                || TextUtils.isEmpty(UserPass) || TextUtils.isEmpty(UserConfirmPass)) {
-
-            Toast.makeText(this, "Empty Fields", Toast.LENGTH_LONG).show();
-        } else {
-
-            if (UserPass.length() > 5) {
-                if (UserPass.equals(UserConfirmPass)) {
-                    // matched pass
-                    SignUpContract.Presenter Presenter =new SignUpPresenter(this);
-                    Presenter.onRegisterButtonClicked(UserEmail, UserPass);
-                } else {
-                    RegUserConfirmPass.setText("");
-                }
-            } else {
-                RegUserPassword.setError("minimum size 6 ");
-            }
-        }
+        Presenter.onRegisterButtonClicked(RegUserEmail.getText().toString(),
+                RegUserPassword.getText().toString(),
+                RegUserConfirmPass.getText().toString());
     }
 
 
     @Override
-    public void navigateToActivity() {
+    public void navigateToSignInActivity() {
         startActivity(new Intent(SignUpActivity.this, SignInActivity.class));
         finish();
     }
 
     @Override
-    public void signUpFailed() {
+    public void showSignUpFailedMessage() {
         Toast.makeText(this,"Failed",Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void ResetConfirmPass() {
+        RegUserConfirmPass.setText("");
+    }
+
+    @Override
+    public void showNotValidPassword() {
+        Toast.makeText(this,"size must > 5",Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void showEmptyFieldsMessage() {
+        Toast.makeText(this, "empty field", Toast.LENGTH_LONG).show();
+
     }
 }

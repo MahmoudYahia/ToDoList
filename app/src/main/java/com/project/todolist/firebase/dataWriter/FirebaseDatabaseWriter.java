@@ -15,10 +15,7 @@ import io.reactivex.Single;
 
 public class FirebaseDatabaseWriter implements DataWriterContract {
 
-    DataWriterContract.WriteComleteListener listener;
-
-    public FirebaseDatabaseWriter(DataWriterContract.WriteComleteListener listener) {
-        this.listener=listener;
+    public FirebaseDatabaseWriter() {
     }
 
 
@@ -28,6 +25,7 @@ public class FirebaseDatabaseWriter implements DataWriterContract {
         String key = childRef.getKey();
         Log.i("itemKey", key);
         return RxFirebaseDatabase.setValue(childRef, item).andThen(Single.just(key));
+
     }
 
     public Completable addItemToUserToDataBase(String itemKey) {
@@ -47,33 +45,28 @@ public class FirebaseDatabaseWriter implements DataWriterContract {
     }
 
     @Override
-    public void writeItem(String title ,String desc) {
+    public Completable writeItem(String title ,String desc) {
 
         Item newItem = new Item(FirebaseDataRefrences.getInstance().getFirebaseUser().getUid(), title, desc);
-        addItemToDataBase(newItem)
-                .flatMapCompletable(itemKey -> addItemToUserToDataBase(itemKey))
-                .subscribe(() -> listener.onWriteComplete()
-                        ,throwable ->listener.onWriteError() );
+
+       return addItemToDataBase(newItem)
+                .flatMapCompletable(itemKey -> addItemToUserToDataBase(itemKey));
+//                .subscribe(() -> listener.onWriteComplete()
+//                        ,throwable ->listener.onWriteError() );
     }
 
     @Override
-    public void writeUser(User user) {
-        addUsertoDatabase(user)
-                .subscribe(() ->listener.onWriteComplete(),throwable -> {
-                    listener.onWriteError();
-                });
+    public Completable writeUser(User user) {
+       return addUsertoDatabase(user);
+//                .subscribe(() ->listener.onWriteComplete(),throwable -> {
+//                    listener.onWriteError();
+//                });
     }
 
-//    @Override
-//    public void writeItemToUser(String UserId, String ItemId) {
-//        shareItemToUser(UserId, ItemId)
-//                .subscribe(() -> listener.onWriteComplete() ,throwable -> listener.onWriteError());
-//    }
-
     @Override
-    public void shareItemTouser(String UserId, String ItemId) {
-        shareItemToUser(UserId, ItemId)
-                .subscribe(() -> listener.onWriteComplete(),throwable -> listener.onWriteError());
+    public Completable shareItemTouser(String UserId, String ItemId) {
+      return shareItemToUser(UserId, ItemId);
+//                .subscribe(() -> listener.onWriteComplete(),throwable -> listener.onWriteError());
     }
 
 

@@ -1,6 +1,7 @@
 package com.project.todolist.signup;
 
-import com.project.todolist.datamodel.User;
+import android.text.TextUtils;
+
 import com.project.todolist.firebase.authentication.AuthContract;
 import com.project.todolist.firebase.authentication.FireBaseAuthModel;
 
@@ -9,7 +10,7 @@ import com.project.todolist.firebase.authentication.FireBaseAuthModel;
  */
 
 public class SignUpPresenter implements SignUpContract.Presenter
-        , AuthContract.AuthCompleteListener {
+        {
 
     SignUpContract.SignupView signupView;
     AuthContract authContract;
@@ -21,18 +22,30 @@ public class SignUpPresenter implements SignUpContract.Presenter
     }
 
     @Override
-    public void onRegisterButtonClicked(String email, String pass) {
-        authContract.SignUp(email, pass, this);
-    }
+    public void onRegisterButtonClicked(String email, String pass, String confirmPass) {
+        if ( TextUtils.isEmpty(email) || TextUtils.isEmpty(pass) || TextUtils.isEmpty(confirmPass) ) {
+           signupView.showEmptyFieldsMessage();
+        }
+        else {
 
-
-    @Override
-    public void onAuthSuccess() {
-        signupView.navigateToActivity();
-    }
-
-    @Override
-    public void onAuthFailed() {
-        signupView.signUpFailed();
+            if (pass.length() > 5) {
+                if (pass.equals(confirmPass)) {
+                    // matched pass
+                    authContract.SignUp(email,pass)
+                    .subscribe(() -> {
+                        signupView.navigateToSignInActivity();
+                    },throwable -> {
+                        signupView.showSignUpFailedMessage();
+                    });
+                }
+                else {
+                    // reset confirm pass
+                    signupView.ResetConfirmPass();
+                }
+            } else {
+                // length is less 6 num
+                signupView.showNotValidPassword();
+            }
+        }
     }
 }
