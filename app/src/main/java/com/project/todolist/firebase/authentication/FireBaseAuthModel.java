@@ -7,7 +7,6 @@ import com.project.todolist.firebase.dataWriter.DataWriterContract;
 import com.project.todolist.firebase.dataWriter.FirebaseDatabaseWriter;
 import com.project.todolist.firebase.refrences.FirebaseDataRefrences;
 import com.project.todolist.datamodel.User;
-
 import durdinapps.rxfirebase2.RxFirebaseAuth;
 import durdinapps.rxfirebase2.RxFirebaseUser;
 import io.reactivex.Completable;
@@ -51,16 +50,7 @@ public class FireBaseAuthModel implements AuthContract {
     public Single<Boolean> SignIn(String email, String pass) {
         return RxFirebaseAuth.signInWithEmailAndPassword(mAuth, email, pass)
                 .flatMapSingle(authResult -> checkFirebaseAuthResult(authResult));
-        /* RxFirebaseAuth.signInWithEmailAndPassword(mAuth, email, pass)
-                .flatMapSingle(authResult -> checkFirebaseAuthResult(authResult))
-                .subscribe(aBoolean -> {
-                    if (aBoolean) {
-                        authCompleteListener.onAuthSuccess();
-                    } else {
-                        authCompleteListener.onAuthFailed();
-                    }
-                });
-*/
+
     }
 
     @Override

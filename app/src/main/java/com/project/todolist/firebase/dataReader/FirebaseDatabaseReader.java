@@ -33,11 +33,6 @@ public class FirebaseDatabaseReader implements DataReaderContract {
     @Override
     public void readUsersList() {
         readUsersfromDataBase();
-//                .subscribe(users -> {
-//                    fetcherListener.onDataFetched(users);
-//                }, throwable -> {
-//                    fetcherListener.onErrorFetchingData();
-//                });
     }
 
     @Override
@@ -48,26 +43,6 @@ public class FirebaseDatabaseReader implements DataReaderContract {
 
     }
 
-//    public Flowable<List<ItemKeyVal>> listenChangesfromDatabase() {
-//        Query where = FirebaseDataRefrences.getInstance().getReference().child("users")
-//                .child(FirebaseDataRefrences.getInstance().getFirebaseUser().getUid())
-//                .child("userItems");
-//
-//        return RxFirebaseDatabase.observeValueEvent(where, DataSnapshotMapper.listOf(String.class))
-//                .flatMapSingle((source) -> Flowable.fromIterable(source)
-//                        .flatMapMaybe(s -> RxFirebaseDatabase.observeSingleValueEvent(FirebaseDataRefrences.getInstance().getReference()
-//                                .child("items")
-//                                .child(s)))
-//                        .map(snapshot -> new ItemKeyVal(snapshot.getKey(), snapshot.getValue(Item.class)))
-//                        .toList());
-//    }
-
-//    @Override
-//    public void readUserItemsId() {
-//         RxFirebaseDatabase.observeSingleValueEvent(FirebaseDataRefrences.getInstance().getReference()
-//                .child("users").child(FirebaseDataRefrences.getInstance().getFirebaseUser().getUid())
-//                .child("userItems"));
-//    }
 
     public Single<List<User>> readUsersfromDataBase() {
         return RxFirebaseDatabase.observeSingleValueEvent(FirebaseDataRefrences.getInstance().getReference().child("users"),

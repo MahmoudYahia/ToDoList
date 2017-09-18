@@ -16,7 +16,6 @@ public interface LoginContract {
 
         void navigateToSignUpActivity();
 
-
         void notLoggedUser();
 
     }
