@@ -9,13 +9,22 @@ import java.util.List;
  */
 
 public interface ReadItemsContract {
-    interface View{
+    interface View {
+        // read items
         void bindData(List<ItemKeyVal> data);
         void showErrorFetchingMessage();
+        // navigation
         void navigateToSignInActivity();
+        void navigateToAddItemActivity();
+        // share
+        void showItemSharedMessage();
+        void showShareItemFailedMessage();
     }
+
     interface Presenter{
         void onActivityReady();
-        void signOut();
+        void onSignOutButtonClicked();
+        void onFloatButtonClicked();
+        void onUserSelectedToShare(String userId,String itemId);
     }
 }

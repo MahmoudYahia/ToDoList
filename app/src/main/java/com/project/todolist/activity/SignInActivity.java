@@ -16,7 +16,7 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class SignInActivity extends AppCompatActivity implements LoginContract.LoginView {
+public class SignInActivity extends AppCompatActivity implements LoginContract.View {
 
     @Bind(R.id.txt_email)
     EditText InputEmial;
@@ -42,7 +42,6 @@ public class SignInActivity extends AppCompatActivity implements LoginContract.L
     @Override
     protected void onStart() {
         super.onStart();
-
         loginPresenter.onActivityStarted();
     }
 
@@ -77,8 +76,6 @@ public class SignInActivity extends AppCompatActivity implements LoginContract.L
     public void navigateToSignUpActivity() {
         startActivity(new Intent(SignInActivity.this, SignUpActivity.class));
     }
-
-
 
     @Override
     public void notLoggedUser() {

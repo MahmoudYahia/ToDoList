@@ -10,9 +10,8 @@ import io.reactivex.Single;
 
 public interface AuthContract {
 
-    //Single<Boolean> SignIn(String emial, String pass, AuthCompleteListener authCompleteListener);
-    Single<Boolean> SignIn(String emial, String pass);
-    Single<Boolean> isUserLoggedIn( );
+    Single<Boolean> SignIn(String email, String pass);
+    Single<Boolean> isUserLoggedIn();
     Completable SignUp(String emial, String pass);
 
 

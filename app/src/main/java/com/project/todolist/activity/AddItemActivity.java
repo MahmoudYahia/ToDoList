@@ -30,10 +30,8 @@ public class AddItemActivity extends AppCompatActivity implements AddItemContrat
 
         AddItemContrat.Presenter presenter = new AddItemPresenter(this);
 
-        submit_btn.setOnClickListener(v -> {
-            presenter.onAddButtonClicked(item_title.getText().toString(), item_desc.getText().toString());
-        });
-
+        submit_btn.setOnClickListener(v ->
+            presenter.onAddButtonClicked(item_title.getText().toString(), item_desc.getText().toString()));
     }
 
     @Override

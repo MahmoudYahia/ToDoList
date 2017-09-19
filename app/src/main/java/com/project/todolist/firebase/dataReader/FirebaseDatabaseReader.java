@@ -1,17 +1,13 @@
 package com.project.todolist.firebase.dataReader;
 
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.Query;
 import com.project.todolist.firebase.refrences.FirebaseDataRefrences;
 import com.project.todolist.datamodel.Item;
 import com.project.todolist.datamodel.ItemKeyVal;
 import com.project.todolist.datamodel.User;
-
 import java.util.List;
-
 import durdinapps.rxfirebase2.DataSnapshotMapper;
 import durdinapps.rxfirebase2.RxFirebaseDatabase;
-import io.reactivex.Completable;
 import io.reactivex.Flowable;
 import io.reactivex.Observable;
 import io.reactivex.Single;
@@ -31,20 +27,12 @@ public class FirebaseDatabaseReader implements DataReaderContract {
     }
 
     @Override
-    public void readUsersList() {
-        readUsersfromDataBase();
-    }
-
-    @Override
-    public Completable signOut() {
-        FirebaseAuth.getInstance().signOut();
-        FirebaseDataRefrences.getInstance().setFirebaseUserNull();
-        return Completable.complete();
-
+    public Single<List<User>> readUsersList() {
+      return  readUsersFromDataBase();
     }
 
 
-    public Single<List<User>> readUsersfromDataBase() {
+    public Single<List<User>> readUsersFromDataBase() {
         return RxFirebaseDatabase.observeSingleValueEvent(FirebaseDataRefrences.getInstance().getReference().child("users"),
                 DataSnapshotMapper.listOf(User.class))
                 .flatMapObservable(Observable::fromIterable)
@@ -59,6 +47,7 @@ public class FirebaseDatabaseReader implements DataReaderContract {
 
         return RxFirebaseDatabase.observeValueEvent(where, DataSnapshotMapper.listOf(String.class))
                 .flatMapSingle((source) -> Flowable.fromIterable(source)
+
                         .flatMapMaybe(s -> RxFirebaseDatabase.observeSingleValueEvent(FirebaseDataRefrences.getInstance().getReference()
                                 .child("items")
                                 .child(s)))

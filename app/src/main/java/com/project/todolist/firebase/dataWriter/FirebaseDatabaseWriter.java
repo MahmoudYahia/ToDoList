@@ -18,6 +18,24 @@ public class FirebaseDatabaseWriter implements DataWriterContract {
     public FirebaseDatabaseWriter() {
     }
 
+    @Override
+    public Completable writeItem(String title ,String desc) {
+        Item newItem = new Item(FirebaseDataRefrences.getInstance().getFirebaseUser().getUid(), title, desc);
+       return addItemToDataBase(newItem)
+                .flatMapCompletable(itemKey -> addItemToUserToDataBase(itemKey));
+    }
+
+    @Override
+    public Completable writeUser(User user) {
+       return addUsertoDatabase(user);
+
+    }
+
+    @Override
+    public Completable shareItemToUser(String UserId, String ItemId) {
+        return RxFirebaseDatabase.setValue(FirebaseDataRefrences.getInstance().getReference()
+                .child("users").child(UserId).child("userItems").push(), ItemId);
+    }
 
     public Single<String> addItemToDataBase(Item item) {
         DatabaseReference itemsRef = FirebaseDataRefrences.getInstance().getReference().child("items");
@@ -25,7 +43,6 @@ public class FirebaseDatabaseWriter implements DataWriterContract {
         String key = childRef.getKey();
         Log.i("itemKey", key);
         return RxFirebaseDatabase.setValue(childRef, item).andThen(Single.just(key));
-
     }
 
     public Completable addItemToUserToDataBase(String itemKey) {
@@ -34,40 +51,8 @@ public class FirebaseDatabaseWriter implements DataWriterContract {
                 .child("userItems").push(), itemKey);
     }
 
-    public Completable shareItemToUser(String UserId, String ItemId) {
-        return RxFirebaseDatabase.setValue(FirebaseDataRefrences.getInstance().getReference()
-                .child("users").child(UserId).child("userItems").push(), ItemId);
-    }
-
     public Completable addUsertoDatabase(User user) {
         return RxFirebaseDatabase.setValue(FirebaseDataRefrences.getInstance().getReference()
                 .child("users").child(user.getUid()), user);
     }
-
-    @Override
-    public Completable writeItem(String title ,String desc) {
-
-        Item newItem = new Item(FirebaseDataRefrences.getInstance().getFirebaseUser().getUid(), title, desc);
-
-       return addItemToDataBase(newItem)
-                .flatMapCompletable(itemKey -> addItemToUserToDataBase(itemKey));
-//                .subscribe(() -> listener.onWriteComplete()
-//                        ,throwable ->listener.onWriteError() );
-    }
-
-    @Override
-    public Completable writeUser(User user) {
-       return addUsertoDatabase(user);
-//                .subscribe(() ->listener.onWriteComplete(),throwable -> {
-//                    listener.onWriteError();
-//                });
-    }
-
-    @Override
-    public Completable shareItemTouser(String UserId, String ItemId) {
-      return shareItemToUser(UserId, ItemId);
-//                .subscribe(() -> listener.onWriteComplete(),throwable -> listener.onWriteError());
-    }
-
-
 }

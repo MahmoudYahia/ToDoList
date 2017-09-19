@@ -13,6 +13,7 @@ public class UserListPresenter implements UserListContract.Presenter{
 
     UserListContract.View view;
     DataReaderContract contract;
+
     public UserListPresenter(UserListContract.View view) {
         this.view = view;
         contract= new FirebaseDatabaseReader();
@@ -20,7 +21,16 @@ public class UserListPresenter implements UserListContract.Presenter{
 
     @Override
     public void onActivityReady() {
-        contract.readUsersList();
+        contract.readUsersList().subscribe(users -> {
+            view.onBindData(users);
+        },throwable -> {
+            view.showErrorFetchingDataMessages();
+        });
+    }
+
+    @Override
+    public void userSelected(String userId) {
+        view.navigateToMainActivityWithUser(userId);
     }
 
 }

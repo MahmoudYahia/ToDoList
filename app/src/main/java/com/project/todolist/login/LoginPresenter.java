@@ -11,11 +11,11 @@ import com.project.todolist.firebase.authentication.FireBaseAuthModel;
 
 public class LoginPresenter implements LoginContract.Presenter {
 
-    LoginContract.LoginView mView;
+    LoginContract.View mView;
     AuthContract authContract;
 
 
-    public LoginPresenter(LoginContract.LoginView mView) {
+    public LoginPresenter(LoginContract.View mView) {
         this.mView = mView;
         authContract = new FireBaseAuthModel();
     }

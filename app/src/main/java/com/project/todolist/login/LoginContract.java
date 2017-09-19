@@ -6,7 +6,7 @@ package com.project.todolist.login;
 
 public interface LoginContract {
 
-    interface LoginView {
+    interface View {
 
         void navigateToMainActivity(); /// activity name
 

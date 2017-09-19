@@ -11,12 +11,16 @@ import java.util.List;
 public interface UserListContract {
 
     interface View {
-       void onBindData(List<User> list);
+
+        void onBindData(List<User> list);
         void showErrorFetchingDataMessages();
+        void navigateToMainActivityWithUser(String userId);
+
     }
 
     interface Presenter{
-      void onActivityReady();
+        void onActivityReady();
+        void userSelected(String userId);
     }
 
 }
