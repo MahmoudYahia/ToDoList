@@ -11,8 +11,5 @@ import io.reactivex.Completable;
 public interface DataWriterContract {
      Completable writeItem(String title , String desc);
      Completable writeUser(User user);
-     Completable shareItemToUser(String UserId, String ItemId);
-
-
-
+     Completable writeSharedItemToUser(String UserId, String ItemId);
 }

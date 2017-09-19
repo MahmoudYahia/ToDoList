@@ -33,7 +33,6 @@ import java.util.List;
 public class MainActivityFragment extends Fragment implements ItemShareListener,ReadItemsContract.View{
 
     int R_Code = 100;
-    OnUserSelectedListener userSelectedListener;
     RecyclerView itemsRecycler;
     ItemsAdapter itemsAdapter;
     ReadItemsContract.Presenter presenter;
@@ -54,9 +53,10 @@ public class MainActivityFragment extends Fragment implements ItemShareListener,
         itemsRecycler.setHasFixedSize(true);
         itemsAdapter = new ItemsAdapter(getActivity(), this);
         itemsRecycler.setAdapter(itemsAdapter);
+        presenter= new ReadItemsPresenter(this);
+
         fab.setOnClickListener(v -> presenter.onFloatButtonClicked());
 
-        presenter= new ReadItemsPresenter(this);
         presenter.onActivityReady();
 
         return view;
@@ -65,7 +65,6 @@ public class MainActivityFragment extends Fragment implements ItemShareListener,
     @Override
     public void onItemSelected(String item_id) {
         presenter.onItemSelectedToShare(item_id);
-     //   userSelectedListener = uid -> presenter.onUserSelectedToShare(uid,item_id);
     }
 
     @Override
@@ -75,7 +74,6 @@ public class MainActivityFragment extends Fragment implements ItemShareListener,
             if (resultCode == Activity.RESULT_OK) {
                 if (data.getExtras() != null) {
                     presenter.activityResult(data.getExtras().getString("user_id"));
-                   // userSelectedListener.onUserSelected(data.getExtras().getString("user_id"));
                 }
 
             }
@@ -93,8 +91,7 @@ public class MainActivityFragment extends Fragment implements ItemShareListener,
             itemsRecycler.smoothScrollToPosition(data.size()-1);
         }
     }
-
-
+    
     @Override
     public void showErrorFetchingMessage() {
         Toast.makeText(getActivity(),"Failed",Toast.LENGTH_LONG).show();
@@ -133,7 +130,7 @@ public class MainActivityFragment extends Fragment implements ItemShareListener,
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         if (id == R.id.action_settings) {
-            presenter.onSignOutButtonClicked(); // rename
+            presenter.onSignOutButtonClicked();
             return true;
         }
         return super.onOptionsItemSelected(item);

@@ -5,6 +5,8 @@ import android.text.TextUtils;
 import com.project.todolist.firebase.authentication.AuthContract;
 import com.project.todolist.firebase.authentication.FireBaseAuthModel;
 
+import io.reactivex.Single;
+
 /**
  * Created by mah_y on 9/14/2017.
  */
@@ -50,12 +52,7 @@ public class LoginPresenter implements LoginContract.Presenter {
                 .subscribe(aBoolean -> {
             if (aBoolean){
               mView.navigateToMainActivity();
-            }else {
-               mView.notLoggedUser();
             }
-
-        },throwable -> {
-            mView.notLoggedUser();
         });
     }
 }

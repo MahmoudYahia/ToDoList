@@ -77,9 +77,5 @@ public class SignInActivity extends AppCompatActivity implements LoginContract.V
         startActivity(new Intent(SignInActivity.this, SignUpActivity.class));
     }
 
-    @Override
-    public void notLoggedUser() {
-
-    }
 }
 

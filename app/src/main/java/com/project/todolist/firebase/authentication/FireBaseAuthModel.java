@@ -74,32 +74,6 @@ public class FireBaseAuthModel implements AuthContract {
 
 
 
-/*
-    @Override
-    public void SignUp(String email, String pass, AuthCompleteListener authCompleteListener) {
-        addNewAccount(email, pass)
-                .filter(firebaseUser -> firebaseUser != null)
-                .doOnSuccess(firebaseUser -> RxFirebaseUser.sendEmailVerification(firebaseUser))
-                .flatMapSingle(firebaseUser -> Single.just(new User(firebaseUser.getUid(), firebaseUser.getEmail())))
-                .doOnSuccess(user -> {
-                    DataWriterContract contract = new FirebaseDatabaseWriter(new DataWriterContract.WriteComleteListener() {
-                        @Override
-                        public void onWriteComplete() {
-
-                        }
-
-                        @Override
-                        public void onWriteError() {
-
-                        }
-                    });
-                    contract.writeUser(user);
-                    /*
-
-
-                     */
-
-
         }
 
 

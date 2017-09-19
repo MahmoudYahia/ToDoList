@@ -14,6 +14,4 @@ public interface AuthContract {
     Single<Boolean> isUserLoggedIn();
     Completable SignUp(String emial, String pass);
 
-
-
 }

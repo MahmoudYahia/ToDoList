@@ -46,7 +46,7 @@ public class UsersListActivity extends AppCompatActivity implements OnUserSelect
     }
 
     @Override
-    public void onBindData(List list) {
+    public void bindData(List list) {
         userAdapter.setList(list);
         userAdapter.notifyDataSetChanged();
     }

@@ -8,16 +8,13 @@ public interface LoginContract {
 
     interface View {
 
-        void navigateToMainActivity(); /// activity name
+        void navigateToMainActivity();
 
-        void showFailedMessage(); // show message
+        void showFailedMessage();
 
         void showEmptyFieldMessage();
 
         void navigateToSignUpActivity();
-
-        void notLoggedUser();
-
     }
 
     interface Presenter extends BasePresenter {

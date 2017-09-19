@@ -12,7 +12,7 @@ public interface UserListContract {
 
     interface View {
 
-        void onBindData(List<User> list);
+        void bindData(List<User> list);
         void showErrorFetchingDataMessages();
         void navigateToMainActivityWithUser(String userId);
 

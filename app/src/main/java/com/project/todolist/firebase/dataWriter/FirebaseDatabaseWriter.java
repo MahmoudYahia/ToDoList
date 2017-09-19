@@ -32,7 +32,7 @@ public class FirebaseDatabaseWriter implements DataWriterContract {
     }
 
     @Override
-    public Completable shareItemToUser(String UserId, String ItemId) {
+    public Completable writeSharedItemToUser(String UserId, String ItemId) {
         return RxFirebaseDatabase.setValue(FirebaseDataRefrences.getInstance().getReference()
                 .child("users").child(UserId).child("userItems").push(), ItemId);
     }

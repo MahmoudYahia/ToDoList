@@ -25,19 +25,22 @@ public class SignUpActivity extends AppCompatActivity implements SignUpContract.
     EditText RegUserConfirmPass;
     @Bind(R.id.btnRegister)
     Button RegisterButton;
+    SignUpContract.Presenter presenter;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_up);
         ButterKnife.bind(this);
+         presenter =new SignUpPresenter(this);
+
     }
 
     @OnClick(R.id.btnRegister)
     public void addAccount() {
-        SignUpContract.Presenter Presenter =new SignUpPresenter(this);
 
-        Presenter.onRegisterButtonClicked(RegUserEmail.getText().toString(),
+        presenter.onRegisterButtonClicked(RegUserEmail.getText().toString(),
                 RegUserPassword.getText().toString(),
                 RegUserConfirmPass.getText().toString());
     }

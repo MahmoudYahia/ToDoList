@@ -54,7 +54,7 @@ public class ReadItemsPresenter implements ReadItemsContract.Presenter {
     @Override
     public void onUserSelectedToShare(String userId, String itemId) {
 
-        writerContract.shareItemToUser(userId, itemId)
+        writerContract.writeSharedItemToUser(userId, itemId)
                 .subscribe(() -> {
                     view.showItemSharedMessage();
                 }, throwable -> {
