@@ -52,6 +52,7 @@ public class FirebaseDataRefrences {
     }
 
     public void setFirebaseUserNull() {
+        firebaseDataRefrencesInstance=null;
         firebaseUser = null;
     }
 

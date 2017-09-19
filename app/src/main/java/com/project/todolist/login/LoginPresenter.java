@@ -32,6 +32,8 @@ public class LoginPresenter implements LoginContract.Presenter {
                         } else {
                             mView.showFailedMessage();
                         }
+                    },throwable -> {
+                        mView.showFailedMessage();
                     });
         }
 

@@ -64,13 +64,8 @@ public class MainActivityFragment extends Fragment implements ItemShareListener,
 
     @Override
     public void onItemSelected(String item_id) {
-
-        Intent i = new Intent(getActivity(), UsersListActivity.class); // violated
-
-        startActivityForResult(i, R_Code);
-
-        userSelectedListener = uid -> presenter.onUserSelectedToShare(uid,item_id);
-
+        presenter.onItemSelectedToShare(item_id);
+     //   userSelectedListener = uid -> presenter.onUserSelectedToShare(uid,item_id);
     }
 
     @Override
@@ -79,14 +74,12 @@ public class MainActivityFragment extends Fragment implements ItemShareListener,
         if (requestCode == R_Code) {
             if (resultCode == Activity.RESULT_OK) {
                 if (data.getExtras() != null) {
-                    userSelectedListener.onUserSelected(data.getExtras().getString("user_id"));
-                    Log.i("user", data.getExtras().getString("user_id"));
+                    presenter.activityResult(data.getExtras().getString("user_id"));
+                   // userSelectedListener.onUserSelected(data.getExtras().getString("user_id"));
                 }
 
             }
-            if (resultCode == Activity.RESULT_CANCELED) {
-                Toast.makeText(getActivity(), "Cancelled", Toast.LENGTH_LONG).show();
-            }
+
         }
     }
 
@@ -100,7 +93,6 @@ public class MainActivityFragment extends Fragment implements ItemShareListener,
             itemsRecycler.smoothScrollToPosition(data.size()-1);
         }
     }
-
 
 
     @Override
@@ -123,12 +115,17 @@ public class MainActivityFragment extends Fragment implements ItemShareListener,
     @Override
     public void showItemSharedMessage() {
         Toast.makeText(getActivity(),"Shared",Toast.LENGTH_LONG).show();
-
     }
 
     @Override
     public void showShareItemFailedMessage() {
         Toast.makeText(getActivity(),"Failed to Share item",Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void navigateToUserListActivity() {
+        Intent i = new Intent(getActivity(), UsersListActivity.class); // violated
+        startActivityForResult(i, R_Code);
     }
 
 

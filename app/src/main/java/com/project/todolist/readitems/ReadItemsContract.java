@@ -19,6 +19,9 @@ public interface ReadItemsContract {
         // share
         void showItemSharedMessage();
         void showShareItemFailedMessage();
+
+        void navigateToUserListActivity();
+        //
     }
 
     interface Presenter{
@@ -26,5 +29,7 @@ public interface ReadItemsContract {
         void onSignOutButtonClicked();
         void onFloatButtonClicked();
         void onUserSelectedToShare(String userId,String itemId);
+        void onItemSelectedToShare(String itemKey);
+        void activityResult(String user_id);
     }
 }

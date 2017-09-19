@@ -37,7 +37,7 @@ public class AddItemActivity extends AppCompatActivity implements AddItemContrat
     @Override
     public void finishCurrentActivity() {
         this.finish();
-        Toast.makeText(this, "Shared", Toast.LENGTH_LONG).show();
+        Toast.makeText(this, " Added ", Toast.LENGTH_LONG).show();
         startActivity(new Intent(this, MainActivity.class));
     }
 

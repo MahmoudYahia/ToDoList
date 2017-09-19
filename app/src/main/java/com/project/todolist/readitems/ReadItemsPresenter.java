@@ -1,5 +1,6 @@
 package com.project.todolist.readitems;
 
+import com.project.todolist.callback.OnUserSelectedListener;
 import com.project.todolist.firebase.authentication.SignOut;
 import com.project.todolist.firebase.authentication.SignOutContract;
 import com.project.todolist.firebase.dataReader.DataReaderContract;
@@ -17,6 +18,7 @@ public class ReadItemsPresenter implements ReadItemsContract.Presenter {
     DataReaderContract readerContract;
     DataWriterContract writerContract;
     SignOutContract signOutContract;
+    OnUserSelectedListener userSelectedListener;
 
     public ReadItemsPresenter(ReadItemsContract.View view) {
         this.view = view;
@@ -51,12 +53,24 @@ public class ReadItemsPresenter implements ReadItemsContract.Presenter {
 
     @Override
     public void onUserSelectedToShare(String userId, String itemId) {
+
         writerContract.shareItemToUser(userId, itemId)
                 .subscribe(() -> {
                     view.showItemSharedMessage();
                 }, throwable -> {
                     view.showShareItemFailedMessage();
                 });
+    }
+
+    @Override
+    public void onItemSelectedToShare(String itemKey) {
+        view.navigateToUserListActivity();
+        userSelectedListener= uid -> this.onUserSelectedToShare(uid,itemKey);
+    }
+
+    @Override
+    public void activityResult(String user_id) {
+        userSelectedListener.onUserSelected(user_id);
     }
 
 
