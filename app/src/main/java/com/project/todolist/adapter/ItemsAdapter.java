@@ -42,12 +42,7 @@ public class ItemsAdapter extends RecyclerView.Adapter<ItemsAdapter.ItemViewHold
 
         holder.title.setText(itemList.get(position).getItem().getItemTitle());
         holder.desc.setText(itemList.get(position).getItem().getItemDesc());
-        holder.itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-               shareListener.onItemSelected(itemList.get(position).getItemKey());
-            }
-        });
+        holder.itemView.setOnClickListener(v -> shareListener.onItemSelected(itemList.get(position).getItemKey()));
 
     }
     @Override

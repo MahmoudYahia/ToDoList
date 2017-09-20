@@ -60,6 +60,7 @@ public class ReadItemsPresenter implements ReadItemsContract.Presenter {
                 }, throwable -> {
                     view.showShareItemFailedMessage();
                 });
+
     }
 
     @Override
